@@ -18,7 +18,6 @@ import AVFoundation
 import UIKit
 import CoreMotion
 
-
 class Orientation  {
     
     var shouldUseDeviceOrientation: Bool  = false
@@ -62,16 +61,20 @@ class Orientation  {
     
     func getPreviewLayerOrientation() -> AVCaptureVideoOrientation {
         // Depends on layout orientation, not device orientation
-        switch UIApplication.shared.statusBarOrientation {
-        case .portrait, .unknown:
-            return AVCaptureVideoOrientation.portrait
-        case .landscapeLeft:
-            return AVCaptureVideoOrientation.landscapeLeft
-        case .landscapeRight:
-            return AVCaptureVideoOrientation.landscapeRight
-        case .portraitUpsideDown:
-            return AVCaptureVideoOrientation.portraitUpsideDown
-        default:
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            switch windowScene.interfaceOrientation {
+            case .unknown, .portrait:
+                return AVCaptureVideoOrientation.portrait
+            case .portraitUpsideDown:
+                return AVCaptureVideoOrientation.portraitUpsideDown
+            case .landscapeLeft:
+                return AVCaptureVideoOrientation.landscapeLeft
+            case .landscapeRight:
+                return AVCaptureVideoOrientation.landscapeRight
+            @unknown default:
+                return AVCaptureVideoOrientation.portrait
+            }
+        } else {
             return AVCaptureVideoOrientation.portrait
         }
     }
