@@ -84,7 +84,7 @@ open class SwiftyCamViewController: UIViewController {
     public var flashMode: FlashMode = .off
 
 	/// Sets whether Pinch to Zoom is enabled for the capture session
-	public var isPinchToZoom = true
+	public var pinchToZoom = true
 
 	/// Sets the maximum zoom scale allowed during gestures gesture
 	public var maxZoomScale = CGFloat.greatestFiniteMagnitude
@@ -823,7 +823,7 @@ extension SwiftyCamViewController : AVCaptureFileOutputRecordingDelegate {
 extension SwiftyCamViewController {
 	/// Handle pinch gesture
 	@objc fileprivate func zoomGesture(pinch: UIPinchGestureRecognizer) {
-		guard isPinchToZoom && currentCamera == .rear else { // ignore pinch
+		guard pinchToZoom && currentCamera == .rear else { // ignore pinch
 			return
 		}
         
