@@ -16,17 +16,19 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 
 import UIKit
 import AVFoundation
+import Combine
 
-class ViewController: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
-    
+class ViewController: SwiftyCamViewController {
+
     @IBOutlet weak var captureButton    : SwiftyRecordButton!
     @IBOutlet weak var flipCameraButton : UIButton!
     @IBOutlet weak var flashButton      : UIButton!
     
+    private var subscription: AnyCancellable?
+    
 	override func viewDidLoad() {
 		super.viewDidLoad()
         shouldPrompToAppSettings = true
-		cameraDelegate = self
 		maximumVideoDuration = 10.0
         shouldUseDeviceOrientation = true
         allowAutoRotate = true
@@ -34,6 +36,8 @@ class ViewController: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         flashMode = .auto
         flashButton.setImage(#imageLiteral(resourceName: "flashauto"), for: UIControl.State())
         captureButton.buttonEnabled = false
+        
+        subscribe()
 	}
 
 	override var prefersStatusBarHidden: Bool {
@@ -45,79 +49,64 @@ class ViewController: SwiftyCamViewController, SwiftyCamViewControllerDelegate {
         captureButton.delegate = self
 	}
     
-    func swiftyCamSessionDidStartRunning(_ swiftyCam: SwiftyCamViewController) {
-        print("Session did start running")
-        captureButton.buttonEnabled = true
+    func subscribe() {
+        subscription = getPublisher()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] swiftyCamStatus in
+                guard let self = self else { return }
+                
+                switch swiftyCamStatus {
+                case .sessionStarted:
+                    print("Session did start running")
+                    self.captureButton.buttonEnabled = true
+                case .sessionStopped:
+                    print("Session did stop running")
+                    self.captureButton.buttonEnabled = false
+                case .photoTaken(photo: let photo):
+                    let newVC = PhotoViewController(image: photo)
+                    self.present(newVC, animated: true, completion: nil)
+                case .recordingVideoBegun:
+                    print("Did Begin Recording")
+                    self.captureButton.growButton()
+                    self.hideButtons()
+                case .recordingVideoFinished:
+                    print("Did finish Recording")
+                    self.captureButton.shrinkButton()
+                    self.showButtons()
+                case .processingVideoFinished(videoUrl: let videoUrl):
+                    let newVC = VideoViewController(videoURL: videoUrl)
+                    self.present(newVC, animated: true, completion: nil)
+                case .cameraSwitched(camera: let camera):
+                    print("Camera did change to \(camera.rawValue)")
+                case .focused(atPoint: let point):
+                    print("Did focus at point: \(point)")
+                    self.focusAnimationAt(point)
+                case .zoomLevelChanged(zoomLevel: let zoomLevel):
+                    print("Zoom level did change. Level: \(zoomLevel)")
+                case .notAuthorized:
+                    break
+                case .configureFailure:
+                    let message = NSLocalizedString("Unable to capture media", comment: "Alert message when something goes wrong during capture session configuration")
+                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+                    self.present(alertController, animated: true, completion: nil)
+                case .recordingVideoFailure(err: let err):
+                    print(err)
+                }
+            })
     }
     
-    func swiftyCamSessionDidStopRunning(_ swiftyCam: SwiftyCamViewController) {
-        print("Session did stop running")
-        captureButton.buttonEnabled = false
-    }
-    
-
-	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didTake photo: UIImage) {
-		let newVC = PhotoViewController(image: photo)
-		self.present(newVC, animated: true, completion: nil)
-	}
-
-	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didBeginRecordingVideo camera: SwiftyCamViewController.CameraSelection) {
-		print("Did Begin Recording")
-		captureButton.growButton()
-        hideButtons()
-	}
-
-	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFinishRecordingVideo camera: SwiftyCamViewController.CameraSelection) {
-		print("Did finish Recording")
-		captureButton.shrinkButton()
-        showButtons()
-	}
-
-	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFinishProcessVideoAt url: URL) {
-		let newVC = VideoViewController(videoURL: url)
-		self.present(newVC, animated: true, completion: nil)
-	}
-
-	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFocusAtPoint point: CGPoint) {
-        print("Did focus at point: \(point)")
-        focusAnimationAt(point)
-	}
-    
-    func swiftyCamDidFailToConfigure(_ swiftyCam: SwiftyCamViewController) {
-        let message = NSLocalizedString("Unable to capture media", comment: "Alert message when something goes wrong during capture session configuration")
-        let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
-        present(alertController, animated: true, completion: nil)
-    }
-
-	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didChangeZoomLevel zoom: CGFloat) {
-        print("Zoom level did change. Level: \(zoom)")
-		print(zoom)
-	}
-
-	func swiftyCam(_ swiftyCam: SwiftyCamViewController, didSwitchCameras camera: SwiftyCamViewController.CameraSelection) {
-        print("Camera did change to \(camera.rawValue)")
-		print(camera)
-	}
-    
-    func swiftyCam(_ swiftyCam: SwiftyCamViewController, didFailToRecordVideo error: Error) {
-        print(error)
-    }
-
     @IBAction func cameraSwitchTapped(_ sender: Any) {
         switchCamera()
     }
     
     @IBAction func toggleFlashTapped(_ sender: Any) {
-        //flashEnabled = !flashEnabled
         toggleFlashAnimation()
     }
 }
 
-
-// UI Animations
+// MARK: UI Animations
 extension ViewController {
-    
     fileprivate func hideButtons() {
         UIView.animate(withDuration: 0.25) {
             self.flashButton.alpha = 0.0
@@ -152,14 +141,13 @@ extension ViewController {
     }
     
     fileprivate func toggleFlashAnimation() {
-        //flashEnabled = !flashEnabled
-        if flashMode == .auto{
+        if flashMode == .auto {
             flashMode = .on
             flashButton.setImage(#imageLiteral(resourceName: "flash"), for: UIControl.State())
-        }else if flashMode == .on{
+        } else if flashMode == .on {
             flashMode = .off
             flashButton.setImage(#imageLiteral(resourceName: "flashOutline"), for: UIControl.State())
-        }else if flashMode == .off{
+        } else if flashMode == .off {
             flashMode = .auto
             flashButton.setImage(#imageLiteral(resourceName: "flashauto"), for: UIControl.State())
         }

@@ -13,7 +13,6 @@
 		05D2A9BC1E80BE9D00B479E9 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A9891E00A74A00B80903 /* PreviewView.swift */; };
 		05D2A9BD1E80BE9D00B479E9 /* SwiftyCamButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A98A1E00A74A00B80903 /* SwiftyCamButton.swift */; };
 		05D2A9BE1E80BE9D00B479E9 /* SwiftyCamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A98B1E00A74A00B80903 /* SwiftyCamViewController.swift */; };
-		05D2A9BF1E80BE9D00B479E9 /* SwiftyCamViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A98C1E00A74A00B80903 /* SwiftyCamViewControllerDelegate.swift */; };
 		16298B561E2703DC0056D413 /* SwiftyRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16298B551E2703DC0056D413 /* SwiftyRecordButton.swift */; };
 		1675A9761E00A68300B80903 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A9751E00A68300B80903 /* AppDelegate.swift */; };
 		1675A9781E00A68300B80903 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A9771E00A68300B80903 /* ViewController.swift */; };
@@ -23,10 +22,8 @@
 		1675A98D1E00A74A00B80903 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A9891E00A74A00B80903 /* PreviewView.swift */; };
 		1675A98E1E00A74A00B80903 /* SwiftyCamButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A98A1E00A74A00B80903 /* SwiftyCamButton.swift */; };
 		1675A98F1E00A74A00B80903 /* SwiftyCamViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A98B1E00A74A00B80903 /* SwiftyCamViewController.swift */; };
-		1675A9901E00A74A00B80903 /* SwiftyCamViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1675A98C1E00A74A00B80903 /* SwiftyCamViewControllerDelegate.swift */; };
 		168505E81E288B4C005B4537 /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168505E71E288B4C005B4537 /* VideoViewController.swift */; };
 		168505EA1E288D80005B4537 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168505E91E288D80005B4537 /* PhotoViewController.swift */; };
-		BECDA34227E65B7D003D11A2 /* SwiftyCamExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECDA34127E65B7D003D11A2 /* SwiftyCamExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,10 +42,8 @@
 		1675A9891E00A74A00B80903 /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreviewView.swift; path = ../../Source/PreviewView.swift; sourceTree = "<group>"; };
 		1675A98A1E00A74A00B80903 /* SwiftyCamButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyCamButton.swift; path = ../../Source/SwiftyCamButton.swift; sourceTree = "<group>"; };
 		1675A98B1E00A74A00B80903 /* SwiftyCamViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyCamViewController.swift; path = ../../Source/SwiftyCamViewController.swift; sourceTree = "<group>"; };
-		1675A98C1E00A74A00B80903 /* SwiftyCamViewControllerDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyCamViewControllerDelegate.swift; path = ../../Source/SwiftyCamViewControllerDelegate.swift; sourceTree = "<group>"; };
 		168505E71E288B4C005B4537 /* VideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		168505E91E288D80005B4537 /* PhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
-		BECDA34127E65B7D003D11A2 /* SwiftyCamExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyCamExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,8 +115,6 @@
 				1675A9891E00A74A00B80903 /* PreviewView.swift */,
 				1675A98A1E00A74A00B80903 /* SwiftyCamButton.swift */,
 				1675A98B1E00A74A00B80903 /* SwiftyCamViewController.swift */,
-				1675A98C1E00A74A00B80903 /* SwiftyCamViewControllerDelegate.swift */,
-				BECDA34127E65B7D003D11A2 /* SwiftyCamExtensions.swift */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -245,7 +238,6 @@
 			files = (
 				05D2A9BC1E80BE9D00B479E9 /* PreviewView.swift in Sources */,
 				056AAB0A1F97CB1E00F6A978 /* Orientation.swift in Sources */,
-				05D2A9BF1E80BE9D00B479E9 /* SwiftyCamViewControllerDelegate.swift in Sources */,
 				05D2A9BE1E80BE9D00B479E9 /* SwiftyCamViewController.swift in Sources */,
 				05D2A9BD1E80BE9D00B479E9 /* SwiftyCamButton.swift in Sources */,
 			);
@@ -256,7 +248,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1675A9781E00A68300B80903 /* ViewController.swift in Sources */,
-				1675A9901E00A74A00B80903 /* SwiftyCamViewControllerDelegate.swift in Sources */,
 				168505E81E288B4C005B4537 /* VideoViewController.swift in Sources */,
 				1675A9761E00A68300B80903 /* AppDelegate.swift in Sources */,
 				1675A98F1E00A74A00B80903 /* SwiftyCamViewController.swift in Sources */,
@@ -264,7 +255,6 @@
 				056AAB091F97CB1700F6A978 /* Orientation.swift in Sources */,
 				16298B561E2703DC0056D413 /* SwiftyRecordButton.swift in Sources */,
 				1675A98D1E00A74A00B80903 /* PreviewView.swift in Sources */,
-				BECDA34227E65B7D003D11A2 /* SwiftyCamExtensions.swift in Sources */,
 				1675A98E1E00A74A00B80903 /* SwiftyCamButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
