@@ -19,7 +19,6 @@ import AVFoundation
 
 /// A function to specifty the Preview Layer's videoGravity. Indicates how the video is displayed within a player layer’s bounds rect.
 public enum SwiftyCamVideoGravity {
-
     /**
      - Specifies that the video should be stretched to fill the layer’s bounds
      - Corrsponds to `AVLayerVideoGravityResize`
@@ -44,7 +43,7 @@ class PreviewView: UIView {
     init(frame: CGRect, videoGravity: SwiftyCamVideoGravity) {
         gravity = videoGravity
         super.init(frame: frame)
-        self.backgroundColor = UIColor.black
+        self.backgroundColor = .black
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -55,27 +54,23 @@ class PreviewView: UIView {
         let previewlayer = layer as! AVCaptureVideoPreviewLayer
         switch gravity {
         case .resize:
-            previewlayer.videoGravity = AVLayerVideoGravity.resize
+            previewlayer.videoGravity = .resize
         case .resizeAspect:
-            previewlayer.videoGravity = AVLayerVideoGravity.resizeAspect
+            previewlayer.videoGravity = .resizeAspect
         case .resizeAspectFill:
-            previewlayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+            previewlayer.videoGravity = .resizeAspectFill
         }
+        
 		return previewlayer
 	}
 	
 	var session: AVCaptureSession? {
-		get {
-			return videoPreviewLayer.session
-		}
-		set {
-			videoPreviewLayer.session = newValue
-		}
+		get { videoPreviewLayer.session }
+		set { videoPreviewLayer.session = newValue }
 	}
 	
 	// MARK: UIView
-	
-	override class var layerClass : AnyClass {
-		return AVCaptureVideoPreviewLayer.self
-	}
+    override class var layerClass: AnyClass {
+        AVCaptureVideoPreviewLayer.self
+    }
 }

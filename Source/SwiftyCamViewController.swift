@@ -199,7 +199,7 @@ open class SwiftyCamViewController: UIViewController {
     fileprivate var previousPanTranslation: CGFloat = 0.0
 
 	/// Last changed orientation
-    fileprivate var orientation: Orientation = Orientation()
+    fileprivate var orientation = Orientation()
 
     /// Boolean to store when View Controller is notified session is running
     fileprivate var sessionRunning = false
@@ -234,6 +234,7 @@ open class SwiftyCamViewController: UIViewController {
 		// Add Gesture Recognizers
         addGestureRecognizers()
 
+        // Add current capture session to preview layer
 		previewLayer.session = session
 
 		// Test authorization status for Camera and Micophone
@@ -275,6 +276,10 @@ open class SwiftyCamViewController: UIViewController {
         let orientation: UIDeviceOrientation = UIDevice.current.orientation
         connection.videoOrientation = shouldAutorotate ? orientation.captureVideoOrientation : .portrait
         previewLayer.frame = view.bounds
+        
+        if setupResult == .success {
+            updatePreviewLayerOrientation()
+        }
     }
 
 	// MARK: ViewDidAppear
@@ -299,9 +304,7 @@ open class SwiftyCamViewController: UIViewController {
                 self.isSessionRunning = self.session.isRunning
                 
                 // Preview layer video orientation can be set only after the connection is created
-                DispatchQueue.main.async {
-                    self.previewLayer.videoPreviewLayer.connection?.videoOrientation = self.orientation.getPreviewLayerOrientation()
-                }
+                self.updatePreviewLayerOrientation()
             case .notAuthorized:
                 if self.shouldPrompToAppSettings {
                     self.promptToAppSettings()
@@ -486,6 +489,14 @@ extension SwiftyCamViewController {
 
 // MARK: Private Functions
 extension SwiftyCamViewController {
+    fileprivate func updatePreviewLayerOrientation() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            self.previewLayer.videoPreviewLayer.connection?.videoOrientation = self.orientation.getPreviewLayerOrientation()
+        }
+    }
+    
     /// Publisher approach notification.
     fileprivate func subscribeCaptureSessionNotifications() {
         NotificationCenter
@@ -662,7 +673,7 @@ extension SwiftyCamViewController {
 
         // Set proper orientation for photo
         // If camera is currently set to front camera, flip image
-        let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: orientation.getImageOrientation(forCamera: currentCamera))
+        let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: orientation.getImageOrientation(for: currentCamera))
 
         return image
     }

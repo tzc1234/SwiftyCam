@@ -20,9 +20,9 @@ import CoreMotion
 
 class Orientation  {
     
-    var shouldUseDeviceOrientation: Bool  = false
+    var shouldUseDeviceOrientation: Bool = false
     
-    fileprivate var deviceOrientation : UIDeviceOrientation?
+    fileprivate var deviceOrientation: UIDeviceOrientation?
     fileprivate let coreMotionManager = CMMotionManager()
     
     init() {
@@ -30,7 +30,7 @@ class Orientation  {
     }
     
     func start() {
-        self.deviceOrientation = UIDevice.current.orientation
+        deviceOrientation = UIDevice.current.orientation
         coreMotionManager.startAccelerometerUpdates(to: .main) { [weak self] (data, error) in
             guard let data = data else {
                 return
@@ -40,22 +40,26 @@ class Orientation  {
     }
   
     func stop() {
-        self.coreMotionManager.stopAccelerometerUpdates()
-        self.deviceOrientation = nil
+        coreMotionManager.stopAccelerometerUpdates()
+        deviceOrientation = nil
     }
     
-    func getImageOrientation(forCamera: SwiftyCamViewController.CameraSelection) -> UIImage.Orientation {
-        guard shouldUseDeviceOrientation, let deviceOrientation = self.deviceOrientation else { return forCamera == .rear ? .right : .leftMirrored }
+    func getImageOrientation(for camera: SwiftyCamViewController.CameraSelection) -> UIImage.Orientation {
+        guard
+            shouldUseDeviceOrientation, let deviceOrientation = self.deviceOrientation
+        else {
+            return camera == .rear ? .right : .leftMirrored
+        }
         
         switch deviceOrientation {
         case .landscapeLeft:
-            return forCamera == .rear ? .up : .downMirrored
+            return camera == .rear ? .up : .downMirrored
         case .landscapeRight:
-            return forCamera == .rear ? .down : .upMirrored
+            return camera == .rear ? .down : .upMirrored
         case .portraitUpsideDown:
-            return forCamera == .rear ? .left : .rightMirrored
+            return camera == .rear ? .left : .rightMirrored
         default:
-            return forCamera == .rear ? .right : .leftMirrored
+            return camera == .rear ? .right : .leftMirrored
         }
     }
     
@@ -64,23 +68,27 @@ class Orientation  {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
             switch windowScene.interfaceOrientation {
             case .unknown, .portrait:
-                return AVCaptureVideoOrientation.portrait
+                return .portrait
             case .portraitUpsideDown:
-                return AVCaptureVideoOrientation.portraitUpsideDown
+                return .portraitUpsideDown
             case .landscapeLeft:
-                return AVCaptureVideoOrientation.landscapeLeft
+                return .landscapeLeft
             case .landscapeRight:
-                return AVCaptureVideoOrientation.landscapeRight
+                return .landscapeRight
             @unknown default:
-                return AVCaptureVideoOrientation.portrait
+                return .portrait
             }
         } else {
-            return AVCaptureVideoOrientation.portrait
+            return .portrait
         }
     }
     
     func getVideoOrientation() -> AVCaptureVideoOrientation? {
-        guard shouldUseDeviceOrientation, let deviceOrientation = self.deviceOrientation else { return nil }
+        guard
+            shouldUseDeviceOrientation, let deviceOrientation = self.deviceOrientation
+        else {
+            return nil
+        }
         
         switch deviceOrientation {
         case .landscapeLeft:
@@ -94,18 +102,18 @@ class Orientation  {
         }
     }
     
-    private func handleAccelerometerUpdate(data: CMAccelerometerData){
-        if(abs(data.acceleration.y) < abs(data.acceleration.x)){
-            if(data.acceleration.x > 0){
-                deviceOrientation = UIDeviceOrientation.landscapeRight
+    private func handleAccelerometerUpdate(data: CMAccelerometerData) {
+        if (abs(data.acceleration.y) < abs(data.acceleration.x)) {
+            if (data.acceleration.x > 0) {
+                deviceOrientation = .landscapeRight
             } else {
-                deviceOrientation = UIDeviceOrientation.landscapeLeft
+                deviceOrientation = .landscapeLeft
             }
-        } else{
-            if(data.acceleration.y > 0){
-                deviceOrientation = UIDeviceOrientation.portraitUpsideDown
+        } else {
+            if (data.acceleration.y > 0) {
+                deviceOrientation = .portraitUpsideDown
             } else {
-                deviceOrientation = UIDeviceOrientation.portrait
+                deviceOrientation = .portrait
             }
         }
     }
